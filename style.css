@@ -82,4 +82,16 @@ body {
         flex-direction: column;
         gap: 15px;
     }
+
+.confirmacion-mensaje {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--color-secondary);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none; /* Inicia oculto */
+}
 }
