@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | K-pop Hive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <p class="announcement">Sé parte de la colmena con K-pop Hive, donde encontrarás los álbumes y merch de tus grupos favoritos</p>
+        <div class="header-content">
+            <a href="index.html" class="logo-link">
+    <div class="logo">
+        <img src="images/logo-kpop-hive.png" alt="Logo K-pop Hive">
+        <h1>K-pop Hive</h1>
+            </div>
+            </a>
+            <div class="user-actions">
+    <a href="profile.html"><i class="fas fa-user"></i> Ingresar</a>
+    <a href="cart.html" class="cart-link">
+        <div class="cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span>0</span>
+        </div>
+    </a>
+</div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html" data-category="preventa">PRE-VENTA</a></li>
+                <li><a href="index.html" data-category="ofertas">OFERTAS</a></li>
+                <li><a href="index.html" data-category="albumes">ALBUMES</a></li>
+                <li><a href="index.html" data-category="merch-oficial">MERCH OFICIAL</a></li>
+                <li><a href="index.html" data-category="merch-fan">MERCHANDISING FAN</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+        <div class="profile-card">
+            <h2>Mi Perfil</h2>
+            <div class="user-info">
+            <div class="input-group">
+                <label for="user-name-input">Nombre:</label>
+                <input type="text" id="user-name-input" placeholder="Ingresa tu nombre">
+            </div>
+    <div class="input-group">
+        <label for="user-email-input">Email:</label>
+        <input type="email" id="user-email-input" placeholder="Ingresa tu email">
+    </div>
+    <button id="save-info-btn">Guardar Información</button>
+</div>
+        </div>
+
+        <div class="orders-card">
+            <h2>Historial de Pedidos</h2>
+            <div id="order-history" class="order-history">
+                </div>
+        </div>
+    </main>
+    
+<script src="data.js"></script>
+<script src="main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const userNameInput = document.getElementById('user-name-input');
+        const userEmailInput = document.getElementById('user-email-input');
+        const saveInfoBtn = document.getElementById('save-info-btn');
+        const orderHistoryContainer = document.getElementById('order-history');
+
+        function loadUserInfo() {
+            const savedName = localStorage.getItem('userName');
+            const savedEmail = localStorage.getItem('userEmail');
+            if (savedName) {
+                userNameInput.value = savedName;
+            }
+            if (savedEmail) {
+                userEmailInput.value = savedEmail;
+            }
+        }
+
+        saveInfoBtn.addEventListener('click', () => {
+            const name = userNameInput.value;
+            const email = userEmailInput.value;
+            if (name && email) {
+                localStorage.setItem('userName', name);
+                localStorage.setItem('userEmail', email);
+                alert('¡Información guardada con éxito!');
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
+        });
+
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('orderHistory')) || [];
+        }
+
+        function renderOrders() {
+            const orders = getOrders();
+            orderHistoryContainer.innerHTML = '';
+
+            if (orders.length === 0) {
+                orderHistoryContainer.innerHTML = '<p class="empty-message">Aún no tienes pedidos.</p>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const orderDate = new Date(order.date).toLocaleDateString('es-ES');
+                const orderItem = document.createElement('div');
+                orderItem.classList.add('order-item');
+                
+                const productList = order.products.map(p => {
+                    return `<p>- ${p.name} (x${p.quantity}) - ${p.price}</p>`;
+                }).join('');
+                
+                orderItem.innerHTML = `
+                    <h4>Pedido #${order.id} - ${orderDate}</h4>
+                    <div class="order-products">
+                        ${productList}
+                    </div>
+                    <p class="order-total"><strong>Total: ${order.total}</strong></p>
+                `;
+                orderHistoryContainer.appendChild(orderItem);
+            });
+        }
+
+        loadUserInfo();
+        renderOrders();
+        updateCartCount();
+    });
+</script>
+</body>
+</html>

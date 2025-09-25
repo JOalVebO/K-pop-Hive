@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="product-title">K-pop Hive - Detalles del Producto</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+    <p class="announcement">Sé parte de la colmena con K-pop Hive, donde encontrarás los álbumes y merch de tus grupos favoritos</p>
+    <div class="header-content">
+        <a href="index.html" class="logo-link">
+            <div class="logo">
+                <img src="images/logo-kpop-hive.png" alt="Logo K-pop Hive">
+                <h1>K-pop Hive</h1>
+            </div>
+        </a>
+        <div class="user-actions">
+            <a href="profile.html"><i class="fas fa-user"></i> Ingresar</a>
+            <a href="cart.html" class="cart-link">
+                <div class="cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>0</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <nav class="main-nav">
+        <ul>
+            <li><a href="index.html?category=preventa" data-category="preventa">PRE-VENTA</a></li>
+            <li><a href="index.html?category=ofertas" data-category="ofertas">OFERTAS</a></li>
+            <li><a href="index.html?category=albumes" data-category="albumes">ALBUMES</a></li>
+            <li><a href="index.html?category=merch-oficial" data-category="merch-oficial">MERCH OFICIAL</a></li>
+            <li><a href="index.html?category=merch-fan" data-category="merch-fan">MERCHANDISING FAN</a></li>
+        </ul>
+    </nav>
+</header>
+
+    <main class="product-detail-container">
+        <div class="product-image">
+            <img id="product-detail-img" src="" alt="Imagen del producto">
+        </div>
+        <div class="product-info">
+            <h2 id="product-detail-name"></h2>
+            <p id="product-detail-price"></p>
+            <div class="product-actions">
+                <input type="number" id="quantity" value="1" min="1">
+                <button id="add-to-cart-btn">Agregar al carrito</button>
+            </div>
+            <p class="product-description"><strong>Descripción:</strong> <br>Las imágenes mostradas son referenciales. Ten en cuenta que si adquieres un producto en preventa junto con otros de entrega inmediata, el envío se realizará en un solo paquete cuando el artículo en preventa esté disponible. Los precios ya incluyen impuestos, aduana e importación. La caja exterior cumple únicamente la función de proteger el contenido, por lo que rayaduras, decoloración o golpes en ella no son motivo de cambio ni devolución.</p>
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const productId = parseInt(params.get('id'));
+
+            let product;
+            for (const category in allProducts) {
+                product = allProducts[category].find(p => p.id === productId);
+                if (product) break;
+            }
+
+            if (product) {
+                document.getElementById('product-title').textContent = product.name;
+                document.getElementById('product-detail-name').textContent = product.name;
+                document.getElementById('product-detail-price').textContent = product.price;
+                document.getElementById('product-detail-img').src = product.img;
+                document.getElementById('product-detail-img').alt = product.name;
+                
+                const addToCartBtn = document.getElementById('add-to-cart-btn');
+                const quantityInput = document.getElementById('quantity');
+                
+                addToCartBtn.addEventListener('click', () => {
+                    const quantity = parseInt(quantityInput.value);
+                    if (quantity > 0) {
+                        addToCart(product, quantity);
+                        alert(`Se agregaron ${quantity} unidades de ${product.name} al carrito.`);
+                    } else {
+                        alert('Por favor, ingresa una cantidad válida.');
+                    }
+                });
+            } else {
+                const mainContainer = document.querySelector('main');
+                mainContainer.innerHTML = '<h2 style="text-align:center; padding: 50px;">Producto no encontrado.</h2>';
+            }
+
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
